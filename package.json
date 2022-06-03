@@ -1,0 +1,23 @@
+{
+    "name": "hw7-openid",
+    "description": "493 Cloud - Assignment 7 - OpenID",
+    "version": "0.0.1",
+    "author": "Spencer Neukam",
+    "license": "ISC",
+    "scripts": {
+        "start": "node server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@google-cloud/datastore": "^6.0.0",
+        "axios": "^0.27.2",
+        "body-parser": "^1.20.0",
+        "dotenv": "^16.0.0",
+        "ejs": "^3.1.7",
+        "express": "^4.16.4",
+        "google-auth-library": "^8.0.2",
+        "jsonwebtoken": "^8.5.1",
+        "node-fetch": "^3.2.4",
+        "node-json2html": "^2.2.2"
+    }
+}

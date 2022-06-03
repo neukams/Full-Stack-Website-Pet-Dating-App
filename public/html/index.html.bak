@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Assignment 6 - OAuth 2</title>
+    <link href="public/css/index.css" rel="stylesheet">
+  </head>
+  <body class="text-center">
+    <img class="center" src="https://clipground.com/images/portfolio-clip-art-1.jpg" alt="" height="250" ><br><br>
+    <main class="oauth-box">
+      <!--<h3 class="h4"><%= redirect_uri_var %></h3><br> -->
+      <!-- <h3 class="h3">Redirect uri var = </h3><h3 class="h4"> <%= redirect_uri_var %></h3><br> -->
+      <form id="oauth-form">
+        <h1 class="h3"><b>Spencer Neukam, CS 493</b></h1><br>
+		<span>
+        <p>Step 1: Create account</p>
+		<p>Step 2: Login</p><br><br>
+        <button class="button" type="submit">Initiate OAuth</button>
+      </form>
+    </main>
+  </body>
+  <script src="public/scripts/index.js"></script>
+</html>
