@@ -10,7 +10,9 @@ const client_creds = require('./oauth20-client-id.json');
 require('dotenv').config();
 
 app.enable('trust proxy');
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 app.use(express.static('./'));
 const oauth_supp = require('./oauth_support.cjs');
@@ -77,12 +79,17 @@ router.get('/', async function(req, res) {
 
 router.post('/redirect_to_google_oauth', async function(req, res) {
     console.log('GET /redirect_to_google_oauth');
-    const state = randStateGenerator();
+
+    console.log('request body:');
+    console.log(req.body);
     const request_type = req.body.request_type;
-    const location = google_oauth + ap + 'state=' + request_type + state;
     console.log('request_type=' + request_type);
+
+    const state = request_type + randStateGenerator();   // modified
     console.log('state=' + state);
 
+    const location = google_oauth + ap + 'state=' + state;
+    
     var result = await db.createState(state);
     console.log('result of db createState()');
     console.log(result);
@@ -95,30 +102,29 @@ router.post('/redirect_to_google_oauth', async function(req, res) {
 
 router.get('/oauth', async function(req, res) {
     console.log('GET /oauth')
-    console.log('Received response from Google server');
-    
+    console.log('Received response from Google server');    
 
     // if State matches what we generated for the user from GET /redirect_to_google_oauth
     // Google Server responds with the information we requested.
-    if (await validState(req.query.state)) {
+    if (await validState(req.query.state)) { 
         
         // Exchange the token given to us by Google redirecting our user for an Access Token (this is the server to server exchange, where we exchange code for the Auth 2.0 token). The OpenID JWT token is also given to use as a result of this exchange.
         var response = await oauth_supp.post_to_google(client_creds, req.query.code, redirect_uri_location);
         //console.log(response);
-        console.log('/-------------/n\n\n\n\nOAuth Response\n\n\n');
-        console.log(response);
+        //console.log('/-------------/n\n\n\n\nOAuth Response\n\n\n');
+        //console.log(response);
         //console.log(response.data.token_type);
         //console.log(response.data.access_token);
-        console.log('JWT Token');
-        console.log(response.data.id_token);
+        //console.log('JWT Token');
+        //console.log(response.data.id_token);
 
         // TODO HERE: Validate the JWT token (response.data.id_token)
         // If valid, display to user on the HTML response page
         // If not, ... check requirements.
 
         var user_data = await oauth_supp.get_data(response.data);
-        console.log('received user data?');
-        console.log(user_data.data.names);
+        //console.log('received user data?');
+        //console.log(user_data.data.names);
 
         //var response = '<pre>Hello TA Tester person.<br/><br/><br/>Display Name:     ' + user_data.data.names[0].displayName + '<br><br>Family Name:      ' + user_data.data.names[0].familyName + '<br><br>givenName:        ' + user_data.data.names[0].givenName + '<br><br>state:            ' + req.query.state + '</pre>';
         db.deleteResourceWithState('State', req.query.state);

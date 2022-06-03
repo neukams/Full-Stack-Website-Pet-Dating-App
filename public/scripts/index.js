@@ -1,6 +1,7 @@
 //const { default: axios } = require('axios');
 //const axios = require('axios');
 //import axios from 'axios';
+//const { default: axios } = require("axios");
 
 console.log('am I getting the new file? v8');
 
@@ -24,16 +25,16 @@ async function initiate_oauth() {
     var url = location.href +  'redirect_to_google_oauth'
     console.log(url);
 
-    const headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
-
     var response = await fetch(url, {
         method: 'POST',
-        headers: headers,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         mode: 'no-cors',
-        body: {"request_type": "oauth"}
+        body: new URLSearchParams({
+            'request_type': 'oauth'
+          })
     });
     var res_json = await response.json();
     
@@ -47,16 +48,16 @@ async function create_account() {
     var url = location.href +  'redirect_to_google_oauth'
     console.log(url);
 
-    const headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
-
     var response = await fetch(url, {
         method: 'POST',
-        headers: headers,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         mode: 'no-cors',
-        body: {"request_type": "create-account"}
+        body: new URLSearchParams({
+            'request_type': 'create-account'
+          })
     });
     var res_json = await response.json();
     
@@ -72,16 +73,16 @@ async function login() {
     console.log('function ending intentionally');
     return;
 
-    const headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
-
     var response = await fetch(url, {
         method: 'POST',
-        headers: headers,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         mode: 'no-cors',
-        body: {"request_type": "login"}
+        body: new URLSearchParams({
+            'request_type': 'login'
+          })
     });
     var res_json = await response.json();
     
