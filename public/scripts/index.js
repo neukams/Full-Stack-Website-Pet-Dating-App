@@ -7,30 +7,18 @@ console.log('am I getting the new file? v8');
 
 document.getElementById('oauth-form').addEventListener('click', function(event){
     event.preventDefault()
-    initiate_oauth();
+    oauth('oauth');
 });
 
 document.getElementById('create-account').addEventListener('click', function(event){
     event.preventDefault()
-    create_account();
+    oauth('create-account');
 });
 
 document.getElementById('login').addEventListener('click', function(event){
     event.preventDefault()
-    login();
-});
-
-async function initiate_oauth() {
-    oauth('oauth');
-}
-
-async function create_account() {
-    oauth('create-account');
-}
-
-async function login() {
     oauth('login');
-}
+});
 
 async function oauth(request_type) {
     console.log('oauth()');
