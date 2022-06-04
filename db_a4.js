@@ -109,22 +109,6 @@ async function getBoat(id) {
     return fromDatastore(boat[0]);
 }
 
-/*async function getBoatWithLoad(load_id) {
-    
-    try {
-        var load = await getLoad(load_id);
-    } catch (err) {
-        utils.logErr(err);
-        return {};
-    }
-
-    if (load.carrier === null) {
-        return {};
-    }
-
-    return await getBoat(load.carrier.id);
-}*/
-
 async function getBoats(cursor) {
     console.log('getBoats()');
     var boats;
@@ -331,6 +315,60 @@ async function getLoadsFromBoat(boat, req) {
 }
 
 /*******************************
+    USERS COLLECTION
+*******************************/
+
+/**
+ * 
+ * Given a JSON document for a user, create or update that user in the database
+ * 
+ * Stores their User ID ('sub' from the JSON Web Token) and name from their google account.
+ * 
+ * @param {*} user -> User document (JSON) to create or update in the database
+ */
+ async function upsertUser(user) {
+
+    // BOILERPLATE CODE - CREATE
+    console.log('upsertUser()');
+
+    console.log('user json before upsert:');
+    console.log(user);
+
+    const query = datastore.createQuery('User');
+    query.filter('sub', user.sub);
+    var result = await datastore.runQuery(query);
+    console.log('attempted to find user based on existing sub');
+
+    // found matching user in db, returning this user.
+    try {
+        result = fromDatastore(result[0][0]);
+        return 'user already exists';
+
+    // user needs to be created
+    } catch {
+        console.log('user not found in db, creating new user');
+        const key = datastore.key('User');
+        if (utils.isEmpty(user)) {
+            console.log('error, user passed into function is empty. Expected user JSON object');
+            return {};
+        }
+
+        try {
+            await datastore.save({"key": key, "data": user});
+        } catch (err) {
+            utils.logErr(err);
+            return {};
+        }
+
+        console.log('user json after upsert:');
+        console.log(user);
+        
+        user.id = Number(key.id);
+        return 'user created';
+    }
+}
+
+/*******************************
     RESOURCE AGNOSTIC
 *******************************/
 
@@ -376,6 +414,8 @@ async function deleteResourceWithState(collection, state_string) {
 }
 
 
+
+
 module.exports = {
     createBoat,
     getBoat,
@@ -392,5 +432,6 @@ module.exports = {
     LOAD,
     createState,
     getState,
-    deleteResourceWithState
+    deleteResourceWithState,
+    upsertUser
 };

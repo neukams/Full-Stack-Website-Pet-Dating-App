@@ -12,10 +12,10 @@ async function post_to_google(client_creds, request_code, redirect_uri_location)
     // POST to google servers
 
     console.log('Attempting to POST to google servers');
-    console.log('client_creds');
-    console.log(client_creds);
-    console.log('request_code');
-    console.log(request_code);
+    //console.log('client_creds');
+    //console.log(client_creds);
+    //console.log('request_code');
+    //console.log(request_code);
 
     try {
         return await axios(

@@ -13,6 +13,7 @@ app.enable('trust proxy');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const jwt_decode = require('jwt-decode');
 
 app.use(express.static('./'));
 const oauth_supp = require('./oauth_support.cjs');
@@ -102,12 +103,13 @@ router.post('/redirect_to_google_oauth', async function(req, res) {
 
 router.get('/oauth', async function(req, res) {
     console.log('GET /oauth')
-    console.log('Received response from Google server');    
+    console.log('Received response from Google server');
 
     // if State matches what we generated for the user from GET /redirect_to_google_oauth
     // Google Server responds with the information we requested.
-    if (await validState(req.query.state)) { 
-        
+    if (await validState(req.query.state)) {
+
+        console.log(req.query.state);
         // Exchange the token given to us by Google redirecting our user for an Access Token (this is the server to server exchange, where we exchange code for the Auth 2.0 token). The OpenID JWT token is also given to use as a result of this exchange.
         var response = await oauth_supp.post_to_google(client_creds, req.query.code, redirect_uri_location);
         //console.log(response);
@@ -117,17 +119,40 @@ router.get('/oauth', async function(req, res) {
         //console.log(response.data.access_token);
         //console.log('JWT Token');
         //console.log(response.data.id_token);
-
-        // TODO HERE: Validate the JWT token (response.data.id_token)
-        // If valid, display to user on the HTML response page
-        // If not, ... check requirements.
-
         var user_data = await oauth_supp.get_data(response.data);
+        db.deleteResourceWithState('State', req.query.state);   // just deletes the State document we temporarily stored.
+
+        if (req.query.state.search('login') === 0) {
+            console.log('oauth request type -> login');
+        } else if (req.query.state.search('create') === 0) {
+            console.log('oauth request type -> create account');
+            const jwt = jwt_decode.default(response.data.id_token);
+            const user = {
+                'displayName': jwt.name,
+                'sub': jwt.sub
+            }
+            var db_result = await db.upsertUser(user);
+            console.log('"created" user:');
+            console.log(db_result);
+            var message = '';
+            if (db_result == 'user already exists') {
+                message = 'This user already exists! Feel free to login anytime';
+            } else if (db_result = 'user created') {
+                message = 'User created!';
+            }
+            res.render('./public/html/user_created.html', {
+                message: message
+            });
+            return;
+        } else if (req.query.state.search('oauth')) {
+            console.log('oauth request type -> standard oauth');
+        }
+        
         //console.log('received user data?');
         //console.log(user_data.data.names);
 
         //var response = '<pre>Hello TA Tester person.<br/><br/><br/>Display Name:     ' + user_data.data.names[0].displayName + '<br><br>Family Name:      ' + user_data.data.names[0].familyName + '<br><br>givenName:        ' + user_data.data.names[0].givenName + '<br><br>state:            ' + req.query.state + '</pre>';
-        db.deleteResourceWithState('State', req.query.state);
+        
         res.render('./public/html/user_info.html', {
             dname: user_data.data.names[0].displayName,
             lname: user_data.data.names[0].familyName,
