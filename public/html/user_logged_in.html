@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>User Info</title>
+    <link href="public/css/user_logged_in.css" rel="stylesheet">
+  </head>
+  <body class="text-center">
+    <img class="center" src="https://cdn1.iconfinder.com/data/icons/avatar-1-2/512/Add_User1-512.png" alt="" height="200" ><br><br><br>
+    <main class="oauth-box">
+        <h5 class="h3">Result</h5><h5 class="h4"> <%= msg %> </h5><br>
+        <h5 class="h3">User Profile</h5><h5 class="h4"> <%= dname %></h5><br>
+        <h5 class="h3">Sub</h5><h5 class="h4"> <%= sub %></h5><br>
+        <h5 class="h3">JWT<h5 class="h4"> <%= jwt %></h5><br>
+    </main>
+    <button class="button" type="submit" id="go-home">Back to Homepage</button>
+  </body>
+  <script src="public/scripts/user_logged_in.js"></script>
+</html>

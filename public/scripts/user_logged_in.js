@@ -13,7 +13,10 @@ document.getElementById('go-home').addEventListener('click', function(event){
 // navigates the user back to the base domain
 async function navigate_home() {
     console.log('navigate_home()');
+    
     var getUrl = window.location;
     var baseUrl = getUrl .protocol + "//" + getUrl.host //+ "/" + getUrl.pathname.split('/')[1];
+
+    console.log(baseUrl);
     window.location = baseUrl;
 }

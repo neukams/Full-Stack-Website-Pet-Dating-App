@@ -1,0 +1,36 @@
+body {
+    padding-top: 3rem;
+    background-color: #f5f5f5;
+}
+
+.oauth-box {
+    width: 95%;
+    /*padding-left: 5rem;
+    padding-right: 5rem;
+    padding-bottom: 5rem;*/
+    /*max-width: 90% of viewport width;  nope */
+    /*max-width: innerWidth;*/
+    margin: auto;
+    text-align: center;
+}
+
+.h4 {
+    color: red;
+    font-size: medium;
+    /*width: 90% of viewport width;*/
+}
+
+.h3 {
+    font-size: medium;
+}
+
+.button {
+    background-color: blue;
+    border: white;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 18px;
+    border-radius: 15px;    
+}

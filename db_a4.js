@@ -327,8 +327,6 @@ async function getLoadsFromBoat(boat, req) {
  * @param {*} user -> User document (JSON) to create or update in the database
  */
  async function upsertUser(user) {
-
-    // BOILERPLATE CODE - CREATE
     console.log('upsertUser()');
 
     console.log('user json before upsert:');
@@ -365,6 +363,26 @@ async function getLoadsFromBoat(boat, req) {
         
         user.id = Number(key.id);
         return 'user created';
+    }
+}
+
+/**
+ * Given a user's sub from a JWT, return true if the user exists in the database, false otherwise
+ * 
+ * @param {} sub -> the sub field from the JSON Web Token from Google's servers
+ */
+async function userExists(sub) {
+    console.log('userExists()');
+
+    const query = datastore.createQuery('User');
+    query.filter('sub', sub);
+    var result = await datastore.runQuery(query);
+
+    try {
+        result = fromDatastore(result[0][0]);
+        return true;
+    } catch {
+        return false;
     }
 }
 
@@ -433,5 +451,6 @@ module.exports = {
     createState,
     getState,
     deleteResourceWithState,
-    upsertUser
+    upsertUser,
+    userExists
 };

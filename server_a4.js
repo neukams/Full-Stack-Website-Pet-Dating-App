@@ -122,15 +122,38 @@ router.get('/oauth', async function(req, res) {
         var user_data = await oauth_supp.get_data(response.data);
         db.deleteResourceWithState('State', req.query.state);   // just deletes the State document we temporarily stored.
 
+        const jwt = jwt_decode.default(response.data.id_token);
+        const user = {
+            'displayName': jwt.name,
+            'sub': jwt.sub
+        }
+
         if (req.query.state.search('login') === 0) {
             console.log('oauth request type -> login');
+
+            var userExists = await db.userExists(jwt.sub);
+
+            if (userExists) {
+                res.render('./public/html/user_logged_in.html', {
+                    msg: 'logged in!',
+                    dname: user_data.data.names[0].displayName,
+                    sub: user.sub,
+                    jwt: response.data.id_token
+                });
+            } else {
+                res.render('./public/html/user_logged_in.html', {
+                    msg: 'Error, user does not exist. Please return to the homepage and create user',
+                    dname: '--',
+                    sub: '--',
+                    jwt: '--'
+                });
+            }
+            return;
+            
+
         } else if (req.query.state.search('create') === 0) {
             console.log('oauth request type -> create account');
-            const jwt = jwt_decode.default(response.data.id_token);
-            const user = {
-                'displayName': jwt.name,
-                'sub': jwt.sub
-            }
+            
             var db_result = await db.upsertUser(user);
             console.log('"created" user:');
             console.log(db_result);
