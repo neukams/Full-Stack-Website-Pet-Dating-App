@@ -21,60 +21,20 @@ document.getElementById('login').addEventListener('click', function(event){
 });
 
 async function initiate_oauth() {
-    console.log('initiate_oauth()');
-    var url = location.href +  'redirect_to_google_oauth'
-    console.log(url);
-
-    var response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        mode: 'no-cors',
-        body: new URLSearchParams({
-            'request_type': 'oauth'
-          })
-    });
-    var res_json = await response.json();
-    
-    console.log(res_json);
-    setTimeout(() => {}, 5000);
-    window.location = res_json['url'];
+    oauth('oauth');
 }
 
 async function create_account() {
-    console.log('create_account()');
     oauth('create-account');
 }
 
 async function login() {
-    console.log('login()');
-    var url = location.href +  'redirect_to_google_oauth'
-    console.log(url);
-    console.log('function ending intentionally');
-    return;
-
-    var response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        mode: 'no-cors',
-        body: new URLSearchParams({
-            'request_type': 'login'
-          })
-    });
-    var res_json = await response.json();
-    
-    console.log(res_json);
-    setTimeout(() => {}, 5000);
-    window.location = res_json['url'];
+    oauth('login');
 }
 
 async function oauth(request_type) {
-    console.log('create_account()');
+    console.log('oauth()');
+    console.log('request type=' + request_type);
     var url = location.href +  'redirect_to_google_oauth'
     console.log(url);
 
