@@ -180,6 +180,16 @@ async function updateBoat(boat) {
     return true;
 }
 
+// return boat(s) that match the provided <value> for <attribute>
+// returns a list of boats.
+async function getBoatByAttribute(property, operator, value) {
+    console.log('getBoatsByAttributes()');
+    const query = datastore.createQuery(BOAT).limit(1);
+    query.filter(property, operator, value);
+    var results = await datastore.runQuery(query);
+    return results[0];
+}
+
 /*******************************
     LOADS
 *******************************/
@@ -477,6 +487,7 @@ module.exports = {
     createBoat,
     getBoat,
     getBoats,
+    getBoatByAttribute,
     createLoad,
     getLoad,
     getLoads,

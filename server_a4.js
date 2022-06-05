@@ -18,7 +18,7 @@ const jwt_decode = require('jwt-decode');
 app.use(express.static('./'));
 const oauth_supp = require('./oauth_support.cjs');
 
-const route = require('./route_handlers');
+const req_handler = require('./request_handler_a5');
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
@@ -240,14 +240,16 @@ router.get('/users', async function(req, res) {
 *******************************/
 
 router.post('/boats', async function(req, res) {
-    console.log('\n\nPOST /boats');
+    /*console.log('\n\nPOST /boats');
     var boat = await db.createBoat(req.body);
     if (utils.isEmpty(boat)) {
         res.status(400).send({"Error": "The request object is missing at least one of the required attributes"});
     } else {
         boat.self = utils.url(req, ["/boats/", boat.id]);
         res.status(201).send(boat);
-    }
+    }*/
+    console.log('POST /boats');
+    return await req_handler.post_boat(req, res);
 });
 
 router.get('/boats/:id', async function(req, res) {
