@@ -221,6 +221,8 @@ router.get('/users', async function(req, res) {
         users.next = utils.url(req, ['/users/?cursor=', results[1].endCursor]);
     }
 
+    utils.remove_sub(users);
+
     res.status(200).send(users);
 });
 
@@ -319,35 +321,6 @@ router.put('/boats/:id', async function(req, res) {
 router.delete('/boats/:id', async function(req, res) {
     console.log('\n\nDELETE /boats/:id');
     return await req_handler.delete_boat(req, res);
-    
-    /*
-    // does boat resource exist?
-    var boat = await db.getBoat(req.params.id);
-    console.log('Boat to be deleted is');
-    console.log(boat);
-    if (utils.isEmpty(boat)) {
-        res.status(404).send({"Error": "No boat with this boat_id exists"});
-        return;
-    }
-
-    // update all loads on boat
-    var loads = await db.getLoadsFromBoat(boat, req);
-    for (i=0; i<loads.length; i++) {
-        loads[i].carrier = null;
-        let success = await db.updateLoad(JSON.parse(JSON.stringify(loads[i])));
-        console.log('load updated: ' + success);
-    }
-
-    // delete boat resource
-    var deleted = await db.deleteResource(db.BOAT, boat);
-    if (!deleted) {
-        console.log('ERROR: Boat was not deleted');
-        res.status(500).send({"Error": "Internal database error"});
-        return;
-    }
-
-    res.status(204).send();
-    */
 });
 
 

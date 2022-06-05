@@ -93,6 +93,22 @@ function buildJson(someJson, keys) {
     return newJson;
 }*/
 
+function remove_sub(users) {
+    
+    var i = 0;
+    try {
+        for (i=0; i<users.users.length; i++) {
+            if (Object.keys(users.users[i]).includes("sub")) {
+                delete users.users[i]['sub']
+            }
+        }
+    } catch {
+        console.log('nothing to delete?');
+    }
+
+    console.log('deleted some user sub values!');
+}
+
 module.exports = {
     url, 
     makeBoatFromBody, 
@@ -101,5 +117,6 @@ module.exports = {
     selfUrlResourceId,
     makeLoadFromBody,
     popLoadFromBoat,
-    printMany
+    printMany,
+    remove_sub
 };

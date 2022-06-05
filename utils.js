@@ -209,6 +209,22 @@ function value_in_array(value, someArray) {
     return false;
 }
 
+function remove_sub(users) {
+    
+    var i = 0;
+    try {
+        for (i=0; i<users.users.length; i++) {
+            if (Object.keys(users.users[i]).includes("sub")) {
+                delete users.users[i]['sub']
+            }
+        }
+    } catch {
+        console.log('nothing to delete?');
+    }
+
+    console.log('deleted some user sub values!');
+}
+
 module.exports = {
     url,
     logErr,
@@ -222,5 +238,6 @@ module.exports = {
     validName,
     validType,
     validLength,
-    validBoatDataProvided
+    validBoatDataProvided,
+    remove_sub
 };
