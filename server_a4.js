@@ -255,7 +255,7 @@ router.post('/boats', async function(req, res) {
 router.get('/boats/:id', async function(req, res) {
     console.log('\n\nGET /boats/:id');
     return await req_handler.get_boat(req, res);
-    
+
     /*var boat = await db.getBoat(req.params.id);
     if (utils.isEmpty(boat)) {
         res.status(404).send({"Error": "No boat with this boat_id exists"});
@@ -304,6 +304,11 @@ router.get('/boats/:boat_id/loads', async function(req, res) {
 
     var loads = await db.getLoadsFromBoat(boat, req);
     res.status(200).send({"loads": loads});
+});
+
+router.patch('/boats/:id', async function(req, res) {
+    console.log('PATCH /boats/:id');
+    return await req_handler.patch_boat(req, res);
 });
 
 router.delete('/boats/:id', async function(req, res) {
