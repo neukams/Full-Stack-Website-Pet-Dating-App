@@ -69,6 +69,23 @@ async function getState(state_string) {
     return fromDatastore(state[0]);
 }
 
+async function getUser(id) {
+    console.log('getUser(id)');
+    console.log('id='+id);
+    var user;
+    const key = datastore.key([USER, Number(id)]);
+    const query = datastore.createQuery(USER);
+    query.filter('__key__', key);
+    user = await datastore.runQuery(query);
+    user = user[0];
+
+    if (utils.isEmpty(user)) {
+        return {};
+    }
+    
+    return fromDatastore(user[0]);
+}
+
 /*******************************
     BOATS
 *******************************/
@@ -471,5 +488,6 @@ module.exports = {
     deleteResourceWithState,
     upsertUser,
     userExists,
-    getUsers
+    getUsers,
+    getUser
 };

@@ -217,6 +217,17 @@ router.get('/users', async function(req, res) {
     res.status(200).send(users);
 });
 
+router.get('/users/:id', async function(req, res) {
+    console.log('\n\nGET /users/:id');
+    var users = await db.getUser(req.params.id);
+    if (utils.isEmpty(users)) {
+        res.status(404).send({"Error": "No users with this id exists"});
+    } else {
+        users.self = utils.url(req, ['/users/', users.id]);
+        res.status(200).send(users);
+    }
+});
+
 /*******************************
     BOATS
 *******************************/
