@@ -186,6 +186,38 @@ router.get('/oauth', async function(req, res) {
 });
 
 /*******************************
+    USERS
+*******************************/
+
+router.get('/users', async function(req, res) {
+    console.log('\n\nGET /users');
+    var cursor = undefined;
+    var users = {};
+
+    if (Object.keys(req.query).includes("cursor")) {
+        cursor = req.query.cursor;
+    }
+
+    try {
+        var results = await db.getUsers(cursor);
+    } catch (err) {
+        utils.logErr(err);
+        res.status(500).send();
+        return;
+    }
+
+    utils.selfUrlResourceId(req, ['/users/'], results[0]);
+    users.users = results[0];
+
+    if (results[1].moreResults !== Datastore.NO_MORE_RESULTS) {
+        console.log('no more results');
+        users.next = utils.url(req, ['/users/?cursor=', results[1].endCursor]);
+    }
+
+    res.status(200).send(users);
+});
+
+/*******************************
     BOATS
 *******************************/
 

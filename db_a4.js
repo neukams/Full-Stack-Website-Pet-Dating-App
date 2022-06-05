@@ -14,6 +14,7 @@ const NEWLOADPROPERTIES = ["volume", "item", "creation_date"];
 const validate = require('./validation_a4');
 const utils = require('./utils_a4');
 const STATE = 'State';
+const USER = 'User';
 
 /*******************************
     DATASTORE STUFF
@@ -386,6 +387,23 @@ async function userExists(sub) {
     }
 }
 
+async function getUsers(cursor) {
+    console.log('getUsers()');
+    var users;
+    const query = datastore.createQuery(USER).limit(5);
+    if (cursor) {
+        console.log('cursor found');
+        query.start(cursor);
+    }
+    users = await datastore.runQuery(query);
+    console.log('get users');
+    console.log(users);
+    fromDatastoreArr(users[0])
+    return users;
+}
+
+
+
 /*******************************
     RESOURCE AGNOSTIC
 *******************************/
@@ -452,5 +470,6 @@ module.exports = {
     getState,
     deleteResourceWithState,
     upsertUser,
-    userExists
+    userExists,
+    getUsers
 };
