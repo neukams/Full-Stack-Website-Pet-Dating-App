@@ -65,12 +65,12 @@ async function validateJWT(token) {
  */
  async function post_boat(req, res) {
 
-    // valid JWT and valid user?
+    // Authenticate Token
     var jwt = await get_jwt(req);
     var sub = await validateJWT(jwt);
     var user = await db.userExists(sub);
     if (utils.isEmpty(user)) {
-        res.status(401).send({'Error': 'You are not authorized to create a boat'});
+        res.status(401).send({'Error': 'Authentication invalid'});
         return;
     }
     
