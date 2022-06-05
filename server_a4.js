@@ -123,7 +123,7 @@ router.get('/oauth', async function(req, res) {
         db.deleteResourceWithState('State', req.query.state);   // just deletes the State document we temporarily stored.
 
         const jwt = jwt_decode.default(response.data.id_token);
-        const user = {
+        var user = {
             'displayName': jwt.name,
             'sub': jwt.sub
         }
@@ -144,12 +144,11 @@ router.get('/oauth', async function(req, res) {
                 res.render('./public/html/user_logged_in.html', {
                     msg: 'Error, user does not exist. Please return to the homepage and create user',
                     dname: '--',
-                    sub: '--',
+                    id: '--',
                     jwt: '--'
                 });
             }
-            return;
-            
+                        
 
         } else if (req.query.state.search('create') === 0) {
             console.log('oauth request type -> create account');
@@ -166,9 +165,16 @@ router.get('/oauth', async function(req, res) {
             res.render('./public/html/user_created.html', {
                 message: message
             });
-            return;
+            
         } else if (req.query.state.search('oauth')) {
             console.log('oauth request type -> standard oauth');
+
+            res.render('./public/html/user_info.html', {
+                dname: user_data.data.names[0].displayName,
+                lname: user_data.data.names[0].familyName,
+                fname: user_data.data.names[0].givenName,
+                jwt: response.data.id_token
+            });
         }
         
         //console.log('received user data?');
@@ -176,12 +182,13 @@ router.get('/oauth', async function(req, res) {
 
         //var response = '<pre>Hello TA Tester person.<br/><br/><br/>Display Name:     ' + user_data.data.names[0].displayName + '<br><br>Family Name:      ' + user_data.data.names[0].familyName + '<br><br>givenName:        ' + user_data.data.names[0].givenName + '<br><br>state:            ' + req.query.state + '</pre>';
         
-        res.render('./public/html/user_info.html', {
-            dname: user_data.data.names[0].displayName,
-            lname: user_data.data.names[0].familyName,
-            fname: user_data.data.names[0].givenName,
-            jwt: response.data.id_token
-        });
+        try {
+            db.deleteResourceWithState('State', req.query.state);
+        } catch {
+            console.log('error with db.deleteResourceWithState()');
+        }
+        return;
+        
     }
 });
 

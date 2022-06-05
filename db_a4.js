@@ -56,11 +56,16 @@ async function createState(state_string) {
 
 async function getState(state_string) {
     console.log('getState()');
-    var state;
+    console.log('state_string=' + state_string);
+    
     const query = datastore.createQuery(STATE);
     query.filter('state', state_string);
+    
+    var state;
     state = await datastore.runQuery(query);
     state = state[0];
+    console.log('retrieved state[0]:');
+    console.log(state);
 
     if (utils.isEmpty(state)) {
         return {};
@@ -446,11 +451,13 @@ async function deleteResource(collection, resource) {
 }
 
 async function deleteResourceWithState(collection, state_string) {
-    console.log('deleteResource()');
+    console.log('deleteResourceWithState()');
     console.log('collection=' + collection);
     console.log('state_string=' + state_string);
 
     var resource = await getState(state_string);
+    console.log('result of getState()');
+    console.log(resource);
     
     const key = datastore.key([collection, resource.id]);
     const transaction = datastore.transaction();
