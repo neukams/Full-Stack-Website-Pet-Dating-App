@@ -407,7 +407,7 @@ async function userExists(sub) {
 async function getUsers(cursor) {
     console.log('getUsers()');
     var users;
-    const query = datastore.createQuery(USER).limit(5);
+    const query = datastore.createQuery(USER).limit(50);
     if (cursor) {
         console.log('cursor found');
         query.start(cursor);
