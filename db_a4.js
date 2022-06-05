@@ -112,7 +112,7 @@ async function getBoat(id) {
 async function getBoats(cursor) {
     console.log('getBoats()');
     var boats;
-    const query = datastore.createQuery(BOAT).limit(3);
+    const query = datastore.createQuery(BOAT).limit(5);
     if (cursor) {
         console.log('cursor found');
         query.start(cursor);
@@ -203,7 +203,7 @@ async function getLoad(id) {
 async function getLoads(cursor) {
     console.log('getLoads(cursor)');
     var loads;
-    const query = datastore.createQuery(LOAD).limit(3);
+    const query = datastore.createQuery(LOAD).limit(5);
     if (cursor) {
         console.log('cursor found');
         query.start(cursor);
