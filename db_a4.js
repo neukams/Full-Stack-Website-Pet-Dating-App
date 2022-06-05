@@ -8,7 +8,7 @@ const { entity } = require('@google-cloud/datastore/build/src/entity');
 const datastore = new Datastore({projectId:projectId});
 const BOAT = 'Boats';
 const LOAD = 'Loads';
-const NEWBOATPROPERTIES = ["name", "type", "length"];
+const NEWBOATPROPERTIES = ["name", "type", "length", "owner_id"];
 const NEWLOADPROPERTIES = ["volume", "item", "creation_date"];
 
 const validate = require('./validation_a4');
@@ -406,7 +406,8 @@ async function getLoadsFromBoat(boat, req) {
  */
 async function userExists(sub) {
     console.log('userExists()');
-
+    console.log('sub is type: ' + typeof sub);
+    
     const query = datastore.createQuery('User');
     query.filter('sub', sub);
     var result = await datastore.runQuery(query);

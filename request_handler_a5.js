@@ -2,13 +2,55 @@ const db = require('./db_a4');
 const utils = require('./utils');
 const json2html = require('node-json2html');
 const json2html_templates = require('./json2html_templates');
+const {OAuth2Client} = require('google-auth-library');
+const client_creds = require('./oauth20-client-id.json');
+const axios = require('axios');
 
 const APPJSON = 'application/json';
 const CONTENTTYPE = 'Content-Type';
 const ACCEPT = 'Accept';
 const TXTHTML = 'text/html'
-const NEW_BOAT_ATTRIBUTES = ['name', 'length', 'type'];
+const NEW_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'owner_id'];
 const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
+
+/**
+ * 
+ * @param {*} req The request object contains the JWT as a Bearer token in the Authorization header: {Authorization: 'Bearer some-jwt-token'}
+ * @returns 
+ */
+ function get_jwt(req) {
+    console.log('get_jwt()');
+
+    try {
+        if (req.headers.authorization.length <= String('Bearer ').length) {
+            console.log('no jwt found in auth req header');
+            return '';
+        }
+    } catch {
+        return '';
+    }
+
+    return req.headers.authorization.slice(req.headers.authorization.search(' ')+1);
+}
+
+// returns the sub value from the JSON Web Token
+async function validateJWT(token) {
+    console.log('validateJWT()');
+    try {
+        const gauth = new OAuth2Client(client_creds.web.client_id);
+        const ticket = await gauth.verifyIdToken({
+            idToken: token,
+            audience: client_creds.web.client_id
+        });
+        const payload = ticket.getPayload();
+        const sub = payload['sub'];
+        return sub;
+    } catch (err) {
+        console.log('Error occured in validateJWT()');
+        console.log(err);
+    }
+    return '';
+}
 
 /**
  * Handles POST requests to create a new Boat resource
@@ -23,6 +65,21 @@ const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
  */
  async function post_boat(req, res) {
 
+    // valid JWT and valid user?
+    var jwt = await get_jwt(req);
+    var sub = await validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'You are not authorized to create a boat'});
+        return;
+    }
+    
+    // piece together the initial boat (no attribute validation yet)
+    var boat = utils.newJsonObject(req.body, NEW_BOAT_ATTRIBUTES);
+    boat.owner_id = user.id
+    console.log('boat is:');
+    console.log(boat);
+
     // valid Content-Type?
     if (req.get(CONTENTTYPE) !== APPJSON) {
         res.status(415).send({"Error": "The allowed values for request header " + CONTENTTYPE + " are " + [APPJSON]})
@@ -36,19 +93,19 @@ const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
     }
 
     // required Boat attributes?
-    if (!utils.contains_keys(req.body, NEW_BOAT_ATTRIBUTES)) {
+    if (!utils.contains_keys(boat, NEW_BOAT_ATTRIBUTES)) {
         res.status(400).send({"Error": "The request object is missing at least one of the required attributes"});
         return;
     }
 
     // all boat attributes are good?
-    if (!utils.validBoatData(req.body)) {
+    if (!utils.validBoatData(boat)) {
         res.status(400).send({"Error": "The provided attribute(s) do not conform to the boat data model, either data types or data length."})
         return;
     }
 
     // boat name unique?
-    var results = await db.getBoatByAttribute('name', '=', req.body.name);
+    var results = await db.getBoatByAttribute('name', '=', boat.name);
     console.log('Duplicate boat name on POST?');
     console.log(results);
     if (!utils.isEmpty(results)) {
@@ -57,7 +114,6 @@ const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
     }
 
     // create boat
-    var boat = utils.newJsonObject(req.body, NEW_BOAT_ATTRIBUTES);
     boat = await db.createBoat(boat);
     boat.self = utils.url(req, ['/boats/', boat.id]);
     res.status(201).send(boat);
@@ -349,5 +405,7 @@ module.exports = {
     get_boat,
     patch_boat,
     put_boat,
-    delete_boat
+    delete_boat,
+    get_jwt,
+    validateJWT    
 }

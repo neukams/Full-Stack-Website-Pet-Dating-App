@@ -109,6 +109,16 @@ function remove_sub(users) {
     console.log('deleted some user sub values!');
 }
 
+function newJsonObject(someJSON, keys) {
+    var newJSON = {}
+    for (let key of keys) {
+        if (someJSON.hasOwnProperty(key)) {
+            newJSON[key] = someJSON[key];
+        }
+    }
+    return newJSON;
+}
+
 module.exports = {
     url, 
     makeBoatFromBody, 
@@ -118,5 +128,6 @@ module.exports = {
     makeLoadFromBody,
     popLoadFromBoat,
     printMany,
-    remove_sub
+    remove_sub,
+    newJsonObject
 };
