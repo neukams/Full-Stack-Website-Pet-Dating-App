@@ -311,6 +311,11 @@ router.patch('/boats/:id', async function(req, res) {
     return await req_handler.patch_boat(req, res);
 });
 
+router.put('/boats/:id', async function(req, res) {
+    console.log('PUT /boats/:id');
+    return await req_handler.put_boat(req, res);
+});
+
 router.delete('/boats/:id', async function(req, res) {
     console.log('\n\nDELETE /boats/:id');
     
@@ -498,6 +503,21 @@ router.delete('/boats/:boat_id/loads/:load_id', async function(req, res) {
 
     res.status(204).send();
 });
+
+/*******************************
+    Invalid Route Requests
+*******************************/
+
+router.put('/boats', async function(req, res) {
+    console.log('PUT /boats');
+    res.status(405).set('Allow', 'POST, GET').send({"Error": "Method Not Accepted"});
+});
+
+router.delete('/boats', async function(req, res) {
+    console.log('DELETE /boats');
+    res.status(405).set('Allow', 'POST, GET').send({"Error": "Method Not Accepted"});
+});
+
 
 
 
