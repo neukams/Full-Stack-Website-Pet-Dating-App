@@ -133,6 +133,15 @@ async function validateJWT(token) {
  */
  async function get_boat(req, res) {
 
+    // Authenticate Token
+    var jwt = await get_jwt(req);
+    var sub = await validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
+
     /*// valid Content-Type header value?
     if(!utils.value_in_array(req.get(CONTENTTYPE), [APPJSON, 'application/json; charset=utf-8'])) {
         console.log(req.get(CONTENTTYPE));
@@ -184,6 +193,15 @@ async function validateJWT(token) {
  * 
  */
  async function patch_boat(req, res) {
+
+    // Authenticate Token
+    var jwt = await get_jwt(req);
+    var sub = await validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
 
     // valid Content-Type header value?
     if(req.get(CONTENTTYPE) !== APPJSON) {
@@ -259,6 +277,15 @@ async function validateJWT(token) {
  * 
  */
  async function put_boat(req, res) {
+
+    // Authenticate Token
+    var jwt = await get_jwt(req);
+    var sub = await validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
 
     // valid Content-Type header value?
     if(req.get(CONTENTTYPE) !== APPJSON) {
@@ -336,6 +363,15 @@ async function validateJWT(token) {
  * 
  */
  async function delete_boat(req, res) {
+
+    // Authenticate Token
+    var jwt = await get_jwt(req);
+    var sub = await validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
 
     /*// valid Content-Type header value?
     if(req.get(CONTENTTYPE) !== APPJSON) {
