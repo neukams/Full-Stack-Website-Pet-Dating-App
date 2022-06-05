@@ -398,9 +398,9 @@ async function userExists(sub) {
 
     try {
         result = fromDatastore(result[0][0]);
-        return true;
+        return result;
     } catch {
-        return false;
+        return {};
     }
 }
 

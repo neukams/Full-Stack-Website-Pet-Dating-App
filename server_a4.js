@@ -131,13 +131,13 @@ router.get('/oauth', async function(req, res) {
         if (req.query.state.search('login') === 0) {
             console.log('oauth request type -> login');
 
-            var userExists = await db.userExists(jwt.sub);
+            var userResult = await db.userExists(jwt.sub);
 
-            if (userExists) {
+            if (!utils.isEmpty(userResult)) {
                 res.render('./public/html/user_logged_in.html', {
                     msg: 'logged in!',
                     dname: user_data.data.names[0].displayName,
-                    sub: user.sub,
+                    id: userResult.id,
                     jwt: response.data.id_token
                 });
             } else {
@@ -217,7 +217,7 @@ router.get('/users', async function(req, res) {
     res.status(200).send(users);
 });
 
-router.get('/users/:id', async function(req, res) {
+/*router.get('/users/:id', async function(req, res) {
     console.log('\n\nGET /users/:id');
     var users = await db.getUser(req.params.id);
     if (utils.isEmpty(users)) {
@@ -226,7 +226,7 @@ router.get('/users/:id', async function(req, res) {
         users.self = utils.url(req, ['/users/', users.id]);
         res.status(200).send(users);
     }
-});
+});*/
 
 /*******************************
     BOATS
