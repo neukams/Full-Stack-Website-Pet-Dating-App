@@ -318,7 +318,9 @@ router.put('/boats/:id', async function(req, res) {
 
 router.delete('/boats/:id', async function(req, res) {
     console.log('\n\nDELETE /boats/:id');
+    return await req_handler.delete_boat(req, res);
     
+    /*
     // does boat resource exist?
     var boat = await db.getBoat(req.params.id);
     console.log('Boat to be deleted is');
@@ -345,6 +347,7 @@ router.delete('/boats/:id', async function(req, res) {
     }
 
     res.status(204).send();
+    */
 });
 
 
@@ -435,6 +438,7 @@ router.delete('/loads/:id', async function(req, res) {
     }
 
     res.status(204).send();
+    
 });
 
 
