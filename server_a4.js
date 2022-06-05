@@ -254,13 +254,15 @@ router.post('/boats', async function(req, res) {
 
 router.get('/boats/:id', async function(req, res) {
     console.log('\n\nGET /boats/:id');
-    var boat = await db.getBoat(req.params.id);
+    return await req_handler.get_boat(req, res);
+    
+    /*var boat = await db.getBoat(req.params.id);
     if (utils.isEmpty(boat)) {
         res.status(404).send({"Error": "No boat with this boat_id exists"});
     } else {
         boat.self = utils.url(req, ['/boats/', boat.id]);
         res.status(200).send(boat);
-    }
+    }*/
 });
 
 router.get('/boats', async function(req, res) {
