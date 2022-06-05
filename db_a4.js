@@ -466,9 +466,6 @@ async function deleteResourceWithState(collection, state_string) {
     return true;
 }
 
-
-
-
 module.exports = {
     createBoat,
     getBoat,
