@@ -355,6 +355,22 @@ async function validateJWT(token) {
 
     // get Boat with id
     var boat = await db.getBoat(req.params.id);
+
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            console.log('boat.owner_id=' + boat.owner_id);
+            console.log('user.id=' + user.id);
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
+            return;
+        }
+    } catch {
+        console.log('caught error in PATCH /boats');
+        console.log('boat.owner_id=' + boat.owner_id);
+        console.log('user.id=' + user.id);
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
+        return;
+    }
     
     // boat not found?
     if (utils.isEmpty(boat)) {
