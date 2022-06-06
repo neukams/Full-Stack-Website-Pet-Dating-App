@@ -14,6 +14,38 @@ const NEW_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'owner_id'];
 const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
 const CORE_BOAT_ATTRIBUTES = ['name', 'length', 'type'];
 
+async function validateJWT(req) {
+    console.log('validateJWT()');
+    try {
+        // Authenticate Token
+        var jwt = await get_jwt(req);
+        if (jwt == '') {
+            console.log('jwt invalid');
+            return {};
+        }
+
+        var sub = await validateJWTwithGoogle(jwt);
+        if (sub == '') {
+            console.log('jwt invalid');
+            return {};
+        }
+
+        var user = await db.userExists(sub);
+        if (utils.isEmpty(user)) {
+            console.log('jwt valid, but not tied to');
+            return {};
+        }
+
+        // successful authentication
+        console.log('jwt valid');
+        return user;
+
+    } catch {
+        console.log('jwt expired');
+        return {};
+    }
+}
+
 /**
  * 
  * @param {*} req The request object contains the JWT as a Bearer token in the Authorization header: {Authorization: 'Bearer some-jwt-token'}
@@ -35,8 +67,8 @@ const CORE_BOAT_ATTRIBUTES = ['name', 'length', 'type'];
 }
 
 // returns the sub value from the JSON Web Token
-async function validateJWT(token) {
-    console.log('validateJWT()');
+async function validateJWTwithGoogle(token) {
+    console.log('validateJWTwithGoogle()');
     try {
         const gauth = new OAuth2Client(client_creds.web.client_id);
         const ticket = await gauth.verifyIdToken({
@@ -66,10 +98,7 @@ async function validateJWT(token) {
  */
  async function post_boat(req, res) {
 
-    // Authenticate Token
-    var jwt = await get_jwt(req);
-    var sub = await validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -135,9 +164,7 @@ async function validateJWT(token) {
  async function get_boat(req, res) {
 
     // Authenticate Token
-    var jwt = await get_jwt(req);
-    var sub = await validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -159,6 +186,12 @@ async function validateJWT(token) {
     // query for boat id
     var boat = await db.getBoat(req.params.id);
 
+    // boat not found?
+    if (utils.isEmpty(boat)) {
+        res.status(404).send({"Error": "No boat with this id exists"});
+        return;
+    }
+
     // only boat owner can view
     try {
         if (boat.owner_id != user.id) {
@@ -172,12 +205,6 @@ async function validateJWT(token) {
         console.log('boat.owner_id=' + boat.owner_id);
         console.log('user.id=' + user.id);
         res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
-        return;
-    }
-
-    // boat not found?
-    if (utils.isEmpty(boat)) {
-        res.status(404).send({"Error": "No boat with this id exists"});
         return;
     }
 
@@ -212,9 +239,7 @@ async function validateJWT(token) {
  async function patch_boat(req, res) {
 
     // Authenticate Token
-    var jwt = await get_jwt(req);
-    var sub = await validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -312,9 +337,7 @@ async function validateJWT(token) {
  async function put_boat(req, res) {
 
     // Authenticate Token
-    var jwt = await get_jwt(req);
-    var sub = await validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -356,6 +379,12 @@ async function validateJWT(token) {
     // get Boat with id
     var boat = await db.getBoat(req.params.id);
 
+    // boat not found?
+    if (utils.isEmpty(boat)) {
+        res.status(404).send({"Error": "No boat with this id exists"});
+        return;
+    }
+
     // only boat owner can update boat attributes
     try {
         if (boat.owner_id != user.id) {
@@ -369,12 +398,6 @@ async function validateJWT(token) {
         console.log('boat.owner_id=' + boat.owner_id);
         console.log('user.id=' + user.id);
         res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
-        return;
-    }
-    
-    // boat not found?
-    if (utils.isEmpty(boat)) {
-        res.status(404).send({"Error": "No boat with this id exists"});
         return;
     }
 
@@ -424,9 +447,7 @@ async function validateJWT(token) {
  async function delete_boat(req, res) {
 
     // Authenticate Token
-    var jwt = await get_jwt(req);
-    var sub = await validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;

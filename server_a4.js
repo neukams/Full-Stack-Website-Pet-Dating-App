@@ -287,9 +287,7 @@ router.get('/boats', async function(req, res) {
     var boats = {};
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -300,6 +298,8 @@ router.get('/boats', async function(req, res) {
     }
 
     try {
+        console.log('user.id=' + user.id);
+        console.log('cursor=' + cursor);
         var results = await db.getBoatsForOwner(cursor, user.id);
     } catch (err) {
         utils.logErr(err);
@@ -322,9 +322,7 @@ router.get('/boats/:boat_id/loads', async function(req, res) {
     console.log('\n\nGET /boats/:boat_id/loads');
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -379,9 +377,7 @@ router.delete('/boats/:id', async function(req, res) {
 router.post('/loads', async function(req, res) {
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -400,9 +396,7 @@ router.post('/loads', async function(req, res) {
 router.get('/loads/:id', async function(req, res) {
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -421,9 +415,7 @@ router.get('/loads/:id', async function(req, res) {
 router.get('/loads', async function(req, res) {
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -460,9 +452,7 @@ router.delete('/loads/:id', async function(req, res) {
     console.log('\n\nDELETE /loads/:id');
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -511,9 +501,7 @@ router.put('/boats/:boat_id/loads/:load_id', async function(req, res) {
     console.log('\n\nPUT /boats/:boat_id/loads');
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
@@ -569,9 +557,7 @@ router.delete('/boats/:boat_id/loads/:load_id', async function(req, res) {
     console.log('\n\nDELETE /boats/:boat_id/loads/:load_id');
 
     // Authenticate Token
-    var jwt = await req_handler.get_jwt(req);
-    var sub = await req_handler.validateJWT(jwt);
-    var user = await db.userExists(sub);
+    user = await req_handler.validateJWT(req);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;

@@ -148,7 +148,7 @@ async function getBoats(cursor) {
 }
 
 async function getBoatsForOwner(cursor, owner_id) {
-    console.log('getBoats()');
+    console.log('getBoatsForOwner()');
     var boats;
     const query = datastore.createQuery(BOAT).limit(5);
     query.filter('owner_id', owner_id);

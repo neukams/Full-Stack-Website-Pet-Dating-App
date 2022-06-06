@@ -46,22 +46,15 @@ function logErr(err) {
 
 function isEmpty(obj) {
 
+    console.log(obj);
+
     var arrayConstructor = [].constructor;
     var objectConstructor = ({}).constructor;
 
-    if (obj == undefined) {
-        return true;
-    }
-
-    if (obj == null) {
-        return true;
-    }
-
-    if (obj === {}) {
-        return true;
-    }
-
-    if (obj === []) {
+    if (obj == undefined ||
+        obj == null      ||
+        obj === {}       ||
+        obj === []          ) {
         return true;
     }
 
@@ -73,8 +66,8 @@ function isEmpty(obj) {
         return Object.keys(obj).length === 0;
     }
 
-    logErr("I don't know what type of object this is");
-    return true;
+    console.log('isEmpty -> false');
+    return false;
 }
 
 function printMany(print, numberOfTimes) {
