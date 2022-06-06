@@ -12,6 +12,7 @@ const ACCEPT = 'Accept';
 const TXTHTML = 'text/html'
 const NEW_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'owner_id'];
 const ALL_BOAT_ATTRIBUTES = ['name', 'length', 'type', 'id'];
+const CORE_BOAT_ATTRIBUTES = ['name', 'length', 'type'];
 
 /**
  * 
@@ -316,7 +317,7 @@ async function validateJWT(token) {
     }
 
     // boat resource contains all attributes?
-    if (!utils.contains_keys(req.body, NEW_BOAT_ATTRIBUTES)) {
+    if (!utils.contains_keys(req.body, CORE_BOAT_ATTRIBUTES)) {
         res.status(400).send({"Error": "Missing required resource attributes"});
         return;
     }
