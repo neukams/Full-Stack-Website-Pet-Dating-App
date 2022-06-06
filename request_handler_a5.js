@@ -255,14 +255,14 @@ async function validateJWT(token) {
         if (boat.owner_id != user.id) {
             console.log('boat.owner_id=' + boat.owner_id);
             console.log('user.id=' + user.id);
-            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
             return;
         }
     } catch {
         console.log('caught error in PATCH /boats');
         console.log('boat.owner_id=' + boat.owner_id);
         console.log('user.id=' + user.id);
-        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
         return;
     }
 
