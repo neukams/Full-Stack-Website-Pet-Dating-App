@@ -201,14 +201,14 @@ router.get('/users', async function(req, res) {
     var cursor = undefined;
     var users = {};
 
-    // Authenticate Token
+    /*// Authenticate Token
     var jwt = await req_handler.get_jwt(req);
     var sub = await req_handler.validateJWT(jwt);
     var user = await db.userExists(sub);
     if (utils.isEmpty(user)) {
         res.status(401).send({'Error': 'Authentication invalid'});
         return;
-    }
+    }*/
 
     if (Object.keys(req.query).includes("cursor")) {
         cursor = req.query.cursor;
@@ -300,7 +300,7 @@ router.get('/boats', async function(req, res) {
     }
 
     try {
-        var results = await db.getBoats(cursor);
+        var results = await db.getBoatsForOwner(cursor, user.id);
     } catch (err) {
         utils.logErr(err);
         res.status(500).send();

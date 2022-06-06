@@ -147,6 +147,22 @@ async function getBoats(cursor) {
     return boats;
 }
 
+async function getBoatsForOwner(cursor, owner_id) {
+    console.log('getBoats()');
+    var boats;
+    const query = datastore.createQuery(BOAT).limit(5);
+    query.filter('owner_id', owner_id);
+    if (cursor) {
+        console.log('cursor found');
+        query.start(cursor);
+    }
+    boats = await datastore.runQuery(query);
+    console.log('get boats with cursor');
+    console.log(boats);
+    fromDatastoreArr(boats[0])
+    return boats;
+}
+
 // updates a Boat
 // removes id or self properties if found
 // assumes the resource is valid otherwise
@@ -407,7 +423,7 @@ async function getLoadsFromBoat(boat, req) {
 async function userExists(sub) {
     console.log('userExists()');
     console.log('sub is type: ' + typeof sub);
-    
+
     const query = datastore.createQuery('User');
     query.filter('sub', sub);
     var result = await datastore.runQuery(query);
@@ -505,5 +521,6 @@ module.exports = {
     upsertUser,
     userExists,
     getUsers,
-    getUser
+    getUser,
+    getBoatsForOwner
 };
