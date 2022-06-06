@@ -201,6 +201,15 @@ router.get('/users', async function(req, res) {
     var cursor = undefined;
     var users = {};
 
+    // Authenticate Token
+    var jwt = await req_handler.get_jwt(req);
+    var sub = await req_handler.validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
+
     if (Object.keys(req.query).includes("cursor")) {
         cursor = req.query.cursor;
     }
@@ -272,6 +281,15 @@ router.get('/boats', async function(req, res) {
     var cursor = undefined;
     var boats = {};
 
+    // Authenticate Token
+    var jwt = await req_handler.get_jwt(req);
+    var sub = await req_handler.validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
+
     if (Object.keys(req.query).includes("cursor")) {
         cursor = req.query.cursor;
     }
@@ -297,6 +315,15 @@ router.get('/boats', async function(req, res) {
 
 router.get('/boats/:boat_id/loads', async function(req, res) {
     console.log('\n\nGET /boats/:boat_id/loads');
+
+    // Authenticate Token
+    var jwt = await req_handler.get_jwt(req);
+    var sub = await req_handler.validateJWT(jwt);
+    var user = await db.userExists(sub);
+    if (utils.isEmpty(user)) {
+        res.status(401).send({'Error': 'Authentication invalid'});
+        return;
+    }
     
     var boat = await db.getBoat(req.params.boat_id);
     if (utils.isEmpty(boat)) {
