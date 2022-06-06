@@ -150,8 +150,8 @@ async function validateJWT(token) {
     }*/
 
     // valid Accept header value?
-    if (!utils.value_in_array(req.get(ACCEPT), [APPJSON, TXTHTML])) {
-        res.status(406).send({"Error": "The allowed values for request header " + ACCEPT + " are " + [APPJSON, TXTHTML].join(', ')});
+    if (!utils.value_in_array(req.get(ACCEPT), [APPJSON])) {
+        res.status(406).send({"Error": "The allowed values for request header " + ACCEPT + " are " + [APPJSON]});
         return;
     }
 
@@ -233,6 +233,22 @@ async function validateJWT(token) {
         return;
     }
 
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            console.log('boat.owner_id=' + boat.owner_id);
+            console.log('user.id=' + user.id);
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+            return;
+        }
+    } catch {
+        console.log('caught error in PATCH /boats');
+        console.log('boat.owner_id=' + boat.owner_id);
+        console.log('user.id=' + user.id);
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+        return;
+    }
+
     // get the attributes to PATCH
     var boat_updates = utils.newJsonObject(req.body, ALL_BOAT_ATTRIBUTES);
     for (let key in boat_updates) {
@@ -271,10 +287,10 @@ async function validateJWT(token) {
  * @param {response}    res     response object from the server route handler
  * 
  * Responses
- *  303 See Other       Success, make a GET request at the url in the Location header to see results
- *  400 Bad Request     Request headers are invalid
- *  404 Not Found       Boat id not found
- * 
+ *  303 See Other                   Success, make a GET request at the url in the Location header to see results
+ *  400 Bad Request                 Request headers are invalid
+ *  404 Not Found                   Boat id not found
+ *  415 Unsupported Media Type      Only application/json is a supported Content-Type header
  */
  async function put_boat(req, res) {
 
@@ -289,7 +305,6 @@ async function validateJWT(token) {
 
     // valid Content-Type header value?
     if(req.get(CONTENTTYPE) !== APPJSON) {
-        //res.status(400).send({"Error": "The allowed values for request header " + CONTENTTYPE + " are " + [APPJSON]})
         res.status(415).send({"Error": "The allowed values for request header " + CONTENTTYPE + " are " + [APPJSON]})
         return;
     }
@@ -327,6 +342,17 @@ async function validateJWT(token) {
     // boat not found?
     if (utils.isEmpty(boat)) {
         res.status(404).send({"Error": "No boat with this id exists"});
+        return;
+    }
+
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+            return;
+        }
+    } catch {
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
         return;
     }
 

@@ -17,7 +17,7 @@ function selfUrlResourceId(req, urlAdditions, boats) {
 }
 
 function makeBoatFromBody(reqBody) {
-    return {"name": reqBody.name, "type": reqBody.type, "length": reqBody.length, "loads": []};
+    return {"name": reqBody.name, "type": reqBody.type, "length": reqBody.length, "loads": [], "owner_id": reqBody.owner_id};
 }
 
 function makeLoadFromBody(reqBody) {
