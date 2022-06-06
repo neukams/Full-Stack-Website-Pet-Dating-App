@@ -479,6 +479,22 @@ router.put('/boats/:boat_id/loads/:load_id', async function(req, res) {
         return;
     }
 
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            console.log('boat.owner_id=' + boat.owner_id);
+            console.log('user.id=' + user.id);
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+            return;
+        }
+    } catch {
+        console.log('caught error in PATCH /boats');
+        console.log('boat.owner_id=' + boat.owner_id);
+        console.log('user.id=' + user.id);
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+        return;
+    }
+
     // check if load already assigned to a boat (even if it's the same boat)
     if (load.carrier !== null && Object.keys(load.carrier).includes('id')) {    // JS evaluates the first expression, and if it returns true the second expression is not evaluated.
         console.log('load.carrier=' + load.carrier);
@@ -521,6 +537,22 @@ router.delete('/boats/:boat_id/loads/:load_id', async function(req, res) {
         return;
     } else if (!utils.popLoadFromBoat(boat, load)) {
         res.status(404).send({"Error": "No boat with this boat_id is loaded with the load with this load_id"});
+        return;
+    }
+
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            console.log('boat.owner_id=' + boat.owner_id);
+            console.log('user.id=' + user.id);
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
+            return;
+        }
+    } catch {
+        console.log('caught error in PATCH /boats');
+        console.log('boat.owner_id=' + boat.owner_id);
+        console.log('user.id=' + user.id);
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner to update a boat'});
         return;
     }
 
