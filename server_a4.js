@@ -336,6 +336,22 @@ router.get('/boats/:boat_id/loads', async function(req, res) {
         return;
     }
 
+    // only boat owner can update boat attributes
+    try {
+        if (boat.owner_id != user.id) {
+            console.log('boat.owner_id=' + boat.owner_id);
+            console.log('user.id=' + user.id);
+            res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
+            return;
+        }
+    } catch {
+        console.log('caught error in PATCH /boats');
+        console.log('boat.owner_id=' + boat.owner_id);
+        console.log('user.id=' + user.id);
+        res.status(403).send({'Error': 'Unauthorized, you must be the boat owner'});
+        return;
+    }
+
     var loads = await db.getLoadsFromBoat(boat, req);
     res.status(200).send({"loads": loads});
 });
