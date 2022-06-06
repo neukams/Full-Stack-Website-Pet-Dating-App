@@ -516,7 +516,7 @@ router.put('/boats/:boat_id/loads/:load_id', async function(req, res) {
 });
 
 // remove load from boat
-// assign a load to a boat
+// assign a load to a boat /
 router.delete('/boats/:boat_id/loads/:load_id', async function(req, res) {
     console.log('\n\nDELETE /boats/:boat_id/loads/:load_id');
 
