@@ -336,7 +336,7 @@ router.get('/boats/:boat_id/loads', async function(req, res) {
         return;
     }
 
-    // only boat owner can update boat attributes
+    // only boat owner can view boat attributes
     try {
         if (boat.owner_id != user.id) {
             console.log('boat.owner_id=' + boat.owner_id);
