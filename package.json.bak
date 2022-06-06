@@ -5,7 +5,7 @@
     "author": "Spencer Neukam",
     "license": "ISC",
     "scripts": {
-        "start": "node server_a4.js",
+        "start": "node server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
